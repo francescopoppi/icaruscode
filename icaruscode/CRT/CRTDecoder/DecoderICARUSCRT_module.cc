@@ -119,7 +119,7 @@ uint64_t crt::DecoderICARUSCRT::CalculateTimestamp(icarus::crt::BernCRTTranslato
 void crt::DecoderICARUSCRT::produce(art::Event& evt)
 {
 
-  // Implementation of required member function here.
+  // Implementation of required member function here.'
   //  std::unique_ptr< std::vector<icarus::crt::CRTData> > crtdata( new std::vector<icarus::crt::CRTData>);
   //auto crtdata = std::make_unique<std::vector<icarus::crt::CRTData>>();
   
@@ -150,8 +150,8 @@ void crt::DecoderICARUSCRT::produce(art::Event& evt)
   };
 
   // vector: Mac5 -> its CRT data
-  std::vector<icarus::crt::CRTData> allCRTdata ( 305 + 1); // TODO size this correctly!
-
+  //std::vector<icarus::crt::CRTData> allCRTdata ( 305 + 1); // TODO size this correctly!
+  std::vector<icarus::crt::CRTData> allCRTdata;
   for (auto & hit : hit_vector){
 
     std::array<Recipe_t, 3U> allRecipes;
@@ -394,7 +394,8 @@ void crt::DecoderICARUSCRT::produce(art::Event& evt)
     for (Recipe_t const& recipe: allRecipes) {
       if (recipe.firstSourceChannel == recipe.lastSourceChannel) continue;
 
-      icarus::crt::CRTData& data = allCRTdata.at(recipe.destMac5);
+      //icarus::crt::CRTData& data = allCRTdata.at(recipe.destMac5);
+      icarus::crt::CRTData data;
       data.fMac5  = recipe.destMac5;
       data.fTs0   = CalculateTimestamp(hit);
       data.fTs1   = hit.ts1;
@@ -407,7 +408,7 @@ void crt::DecoderICARUSCRT::produce(art::Event& evt)
         destCh += recipe.direction; // increase or decrease the source
 
       }
-
+      allCRTdata.push_back(data);
     } // for all recipes
 
   } // for all input data
