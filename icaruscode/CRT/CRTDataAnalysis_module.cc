@@ -147,7 +147,6 @@ namespace crt {
     art::InputTag fTriggerLabel;
     art::InputTag fCRTHitProducerLabel;        ///< The name of the producer that created hits
     art::InputTag fCRTDAQProducerLabel;
-    art::InputTag fTriggerLabel;
     static map<int, vector<pair<int,int>>> fFebMap;
 
     // The n-tuples we'll create.
