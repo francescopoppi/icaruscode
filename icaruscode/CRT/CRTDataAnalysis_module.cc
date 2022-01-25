@@ -225,13 +225,6 @@ namespace crt {
     TH1F* fFEBMultHistM;
     TH1F* fFEBMultHistD;
     */
-    //add trigger data product vars 
-    unsigned int m_gate_type;
-    std::string m_gate_name;
-    uint64_t m_trigger_timestamp;
-    uint64_t m_gate_start_timestamp;
-    uint64_t m_trigger_gate_diff;
-    uint64_t m_gate_crt_diff;
     
     /// @}
     
