@@ -117,11 +117,11 @@ namespace crt {
         Name("CRTDAQLabel"),
         Comment("tag of the input data product with calibrated CRT data")
         };
+
       fhicl::Atom<art::InputTag> TriggerLabel {
         Name("TriggerLabel"),
 	Comment("Label for the Trigger fragment label")
 	};
-   
 
     }; // Config
     
@@ -144,6 +144,7 @@ namespace crt {
     void FillFebMap();
 
     // The parameters we'll read from the .fcl file.
+    art::InputTag fTriggerLabel;
     art::InputTag fCRTHitProducerLabel;        ///< The name of the producer that created hits
     art::InputTag fCRTDAQProducerLabel;
     art::InputTag fTriggerLabel;
@@ -164,6 +165,14 @@ namespace crt {
     /// @name The variables that will go into the CosmicDisplay n-tuple.
     /// @{
     static const int LAR_PROP_DELAY = 1.0/(30.0/1.38); //[ns/cm]
+
+    //add trigger data product vars 
+    unsigned int m_gate_type;
+    std::string m_gate_name;
+    uint64_t m_trigger_timestamp;
+    uint64_t m_gate_start_timestamp;
+    uint64_t m_trigger_gate_diff;
+    uint64_t m_gate_crt_diff;
 
     //CRT data product vars
     //static const int kDetMax = 64;
@@ -249,6 +258,7 @@ namespace crt {
  
   CRTDataAnalysis::CRTDataAnalysis(Parameters const& config)
     : EDAnalyzer(config)
+    , fTriggerLabel( config().TriggerLabel() )
     , fCRTHitProducerLabel(config().CRTHitLabel())
     , fCRTDAQProducerLabel(config().CRTDAQLabel())
     , fTriggerLabel( config().TriggerLabel() )
@@ -337,7 +347,7 @@ namespace crt {
     fDAQNtuple->Branch("gate_start_timestamp", &m_gate_start_timestamp, "gate_start_timestamp/l");
     fDAQNtuple->Branch("trigger_gate_diff", &m_trigger_gate_diff, "trigger_gate_diff/l");
     fDAQNtuple->Branch("gate_crt_diff",&m_gate_crt_diff, "gate_crt_diff/l");
-    
+
     // Define the branches of our SimHit n-tuple
     fHitNtuple->Branch("event",       &fHitEvent,    "event/I");
     fHitNtuple->Branch("nHit",        &fNHit,        "nHit/I");
@@ -376,6 +386,7 @@ namespace crt {
     
     //add trigger info 
     if( !fTriggerLabel.empty() ) { 
+
       art::Handle<sbn::ExtraTriggerInfo> trigger_handle;
       event.getByLabel( fTriggerLabel, trigger_handle );
       if( trigger_handle.isValid() ) {
@@ -385,6 +396,7 @@ namespace crt {
 	m_trigger_timestamp = trigger_handle->triggerTimestamp;
 	m_gate_start_timestamp =  trigger_handle->beamGateTimestamp;
 	m_trigger_gate_diff = trigger_handle->triggerTimestamp - trigger_handle->beamGateTimestamp;
+
       }
       else{
 	mf::LogError("ICARUSFlashAssAna") << "No raw::Trigger associated to label: " << fTriggerLabel.label() << "\n" ; 
@@ -393,7 +405,6 @@ namespace crt {
     else {
       std::cout  << "Trigger Data product " << fTriggerLabel.label() << " not found!\n" ; 
     }
-
 
     art::Handle<vector<icarus::crt::CRTData>> crtDAQHandle;
     bool isCRTDAQ = event.getByLabel(fCRTDAQProducerLabel, crtDAQHandle);
