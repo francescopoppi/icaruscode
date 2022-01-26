@@ -102,7 +102,11 @@ uint64_t crt::DecoderICARUSCRT::CalculateTimestamp(icarus::crt::BernCRTTranslato
    * see: https://sbn-docdb.fnal.gov/cgi-bin/private/DisplayMeeting?sessionid=7783
    */
   int32_t ts0  = hit.ts0; //must be signed int
+ 
+  //std::cout << "\n\tMAC5:              0x" << std::hex << (int)hit.mac5 << std::dec << " (" << (int)hit.mac5 << ")";
 
+  //std::cout << "Mac5: " << hit.mac5 << " ";
+  std::cout <<(hit.IsReference_TS1()?" [T1 reference]":"")<< ", mac5: " << std::dec << (int)hit.mac5 << ", ts0:" << ts0 << ", ts1: " << hit.ts1 << "\n";
   //add PPS cable length offset modulo 1s
   if(!hit.IsReference_TS0() && !hit.IsReference_TS1()) { //don't correct reference T0 and T1 hits for cable length
     try {

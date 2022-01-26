@@ -253,7 +253,6 @@ namespace crt {
     , fTriggerLabel( config().TriggerLabel() )
     , fCRTHitProducerLabel(config().CRTHitLabel())
     , fCRTDAQProducerLabel(config().CRTDAQLabel())
-    , fTriggerLabel( config().TriggerLabel() )
     , fCrtutils(new CRTCommonUtils())
   {
     // Get a pointer to the geometry service provider.
